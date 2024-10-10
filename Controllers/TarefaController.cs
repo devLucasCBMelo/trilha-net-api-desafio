@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using TrilhaApiDesafio.Context;
 using TrilhaApiDesafio.Models;
 
+
 namespace TrilhaApiDesafio.Controllers
 {
     [ApiController]
@@ -65,9 +66,11 @@ namespace TrilhaApiDesafio.Controllers
         [HttpGet("ObterPorStatus")]
         public IActionResult ObterPorStatus(EnumStatusTarefa status)
         {
-            // TODO: Buscar  as tarefas no banco utilizando o EF, que contenha o status recebido por parâmetro
-            // Dica: Usar como exemplo o endpoint ObterPorData
-            var tarefa = _context.Tarefas.Where(x => x.Status == status);
+            if (!Enum.IsDefined(typeof(EnumStatusTarefa), status))
+            {
+                return BadRequest("O status deve ser fornecido");
+            }
+            var tarefa = _context.Tarefas.Where(x => x.Status == status).ToList();
             return Ok(tarefa);
         }
 
@@ -109,5 +112,6 @@ namespace TrilhaApiDesafio.Controllers
             // TODO: Remover a tarefa encontrada através do EF e salvar as mudanças (save changes)
             return NoContent();
         }
+
     }
 }
